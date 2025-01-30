@@ -328,16 +328,16 @@ def evaluateAngle(coords, xGoal, yGoal, XspeedDelta, YspeedDelta):
     xAngle = 0
     yAngle = 0
 
-    xAngle = XspeedDelta / 40 * -3
+    xAngle = XspeedDelta / 40 * -4
 
-    yAngle = YspeedDelta / 40 * -3
+    yAngle = YspeedDelta / 40 * -4
 
 
     value = (coords[0] - xGoal) / 450
-    xAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -4
+    xAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -3
     
     value = (coords[1] - yGoal) / 450
-    yAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -4
+    yAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -3
 
     return yAngle, xAngle
 
