@@ -93,6 +93,9 @@ while True:
         print(Yvelocity)
         print(vectorspeed)
 
+        if velocityData == (0, 0, 0):
+            continue
+        
         angles = tr.evaluateAngle(coords, Xvelocity, Yvelocity, vectorspeed)
 
         mv.setPlateAngle(angles[0], angles[1])

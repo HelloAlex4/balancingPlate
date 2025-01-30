@@ -57,7 +57,7 @@ previousCoords = []
 def getBallVelocityVector(coords):
     previousCoords.append(coords)
     if len(previousCoords) < 6:
-        return (0, 0)
+        return (0, 0, 0)
     
     previousX, previousY = previousCoords.pop(0)
 
