@@ -48,7 +48,7 @@ def find_orange_object_coordinates():
             # Calculate the center coordinates
             center_x = x + w // 2
             center_y = y + h // 2
-            coordinates = (center_x, center_y)
+            coordinates = (center_y, center_x)
 
     return coordinates
 
