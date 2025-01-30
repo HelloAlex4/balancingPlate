@@ -13,6 +13,9 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
     global pastYError
     global pastVectorSpeed
 
+    global xAngleAdjustor
+    global yAngleAdjustor
+
     pastXError.append(xError)
     pastYError.append(yError)
     pastVectorSpeed.append(vectorSpeed)
