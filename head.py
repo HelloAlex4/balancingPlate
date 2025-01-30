@@ -53,7 +53,7 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
             else:
                 yAngleAdjustor += 0.3
             
-            adjustorCountdown = 15
+            adjustorCountdown = 10
             
             pastXError = []
             pastYError = []
@@ -65,7 +65,7 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
             else:
                 xAngleAdjustor += 0.3
 
-            adjustorCountdown = 15
+            adjustorCountdown = 10
 
             pastXError = []
             pastYError = []
