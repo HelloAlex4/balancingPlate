@@ -41,8 +41,6 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
         pastXError.pop(0)
         pastYError.pop(0)
         pastVectorSpeed.pop(0)
-    else:
-        continue
 
     print("averageXError" + str(averageXError))
 
