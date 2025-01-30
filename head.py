@@ -18,6 +18,8 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
     global xAngleAdjustor
     global yAngleAdjustor
 
+    global adjustorCountdown
+
     if adjustorCountdown > 0:
         adjustorCountdown -= 1
         return
