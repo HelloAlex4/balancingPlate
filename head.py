@@ -3,4 +3,4 @@ import trackingFunctions as tr
 
 coords = tr.find_orange_object_coordinates
 
-print(coords)
+print(coords[0])
