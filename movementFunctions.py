@@ -7,6 +7,9 @@ import threading
 from picamera2 import Picamera2
 import cv2
 
+chip = gpiod.Chip('gpiochip0')
+motor_lines = {}
+
 motors = [
     {"name": "Motor 1", "dir": 17, "step": 27, "ticks": 0},
     {"name": "Motor 2", "dir": 23, "step": 24, "ticks": 0},
