@@ -1,3 +1,3 @@
-import movementFunctions
+import movementFunctions as mv
 
-centerPlate()
+mv.centerPlate()
