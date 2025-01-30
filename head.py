@@ -1,3 +1,4 @@
 import movementFunctions as mv
+import trackingFunctions as tr
 
-mv.centerPlate()
+tr.find_orange_object_coordinates

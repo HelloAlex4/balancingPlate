@@ -15,13 +15,13 @@ def initialize_camera():
     picam2.start()
     return picam2
 
-def find_orange_object_coordinates(picam2):
+def find_orange_object_coordinates():
     # Define the HSV range for orange color
     lower_orange = np.array([15, 150, 150])  # Narrowed range for hue, saturation, and value
     upper_orange = np.array([20, 255, 255])  # Narrowed range for hue, saturation, and value
 
     # Capture a single frame
-    frame = picam2.capture_array()
+    frame = camera.capture_array()
 
     # Convert from RGB to BGR for OpenCV
     frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
