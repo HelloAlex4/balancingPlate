@@ -346,6 +346,8 @@ camera = initialize_camera()
 
 fool = input("lay the ball on top")
 
+#git
+
 tick = 0
 
 goalX = 600
