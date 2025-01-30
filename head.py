@@ -76,6 +76,8 @@ tick = 0
 
 mv.centerPlate()
 
+wait = input("put the ball on the plate")
+
 while True:
     tick += 1
 
@@ -85,6 +87,11 @@ while True:
         Xvelocity = velocityData[0]
         Yvelocity = velocityData[1]
         vectorspeed = velocityData[2]
+
+        print(coords)
+        print(Xvelocity)
+        print(Yvelocity)
+        print(vectorspeed)
 
         angles = tr.evaluateAngle(coords, Xvelocity, Yvelocity, vectorspeed)
 
