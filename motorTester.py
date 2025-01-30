@@ -209,7 +209,6 @@ def setPlateAngle(xAngle, yAngle):
 
 
 centerPlate()
-time.sleep(2)
 
 def oscillateMotor(motor_index, min_height, max_height, iterations, delay):
     """
