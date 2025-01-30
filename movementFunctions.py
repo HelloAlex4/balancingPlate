@@ -7,21 +7,12 @@ import threading
 from picamera2 import Picamera2
 import cv2
 
-# GPIO pin configurations for each motor
 motors = [
     {"name": "Motor 1", "dir": 17, "step": 27, "ticks": 0},
     {"name": "Motor 2", "dir": 23, "step": 24, "ticks": 0},
     {"name": "Motor 3", "dir": 5, "step": 6, "ticks": 0}
 ]
 
-currentYAngle = 0
-currentXAngle = 0
-
-# Initialize GPIO
-chip = gpiod.Chip('gpiochip0')
-motor_lines = {}
-
-# Set GPIO 13, 16, and 26 to high permanently
 gpio13_line = chip.get_line(13)
 gpio13_line.request(consumer="motor_test", type=gpiod.LINE_REQ_DIR_OUT)
 gpio13_line.set_value(1)
@@ -206,138 +197,3 @@ def setPlateAngle(xAngle, yAngle):
     # Wait for all threads to complete
     for thread in threads:
         thread.join()
-
-
-#ball balancer
-def initialize_camera():
-    # Initialize Picamera2
-    picam2 = Picamera2()
-    config = picam2.create_preview_configuration(main={"size": (1000, 1000)})  # Adjust resolution
-    picam2.configure(config)
-    picam2.start()
-    return picam2
-
-def find_orange_object_coordinates(picam2):
-    # Define the HSV range for orange color
-    lower_orange = np.array([15, 150, 150])  # Narrowed range for hue, saturation, and value
-    upper_orange = np.array([20, 255, 255])  # Narrowed range for hue, saturation, and value
-
-    # Capture a single frame
-    frame = picam2.capture_array()
-
-    # Convert from RGB to BGR for OpenCV
-    frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-
-    # Convert the frame to HSV
-    hsv_frame = cv2.cvtColor(frame_bgr, cv2.COLOR_BGR2HSV)
-
-    # Create a mask for orange color
-    mask = cv2.inRange(hsv_frame, lower_orange, upper_orange)
-
-    # Find contours of the orange regions
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    coordinates = None
-
-    # If there are contours, find the largest one
-    if contours:
-        largest_contour = max(contours, key=cv2.contourArea)
-        area = cv2.contourArea(largest_contour)
-
-        if area > 500:  # Ignore small clusters
-            # Get the bounding box coordinates
-            x, y, w, h = cv2.boundingRect(largest_contour)
-            # Calculate the center coordinates
-            center_x = x + w // 2
-            center_y = y + h // 2
-            coordinates = (center_x, center_y)
-
-    return coordinates
-
-previousCoords = []
-
-def getBallVelocityVector(coords):
-    previousCoords.append(coords)
-    if len(previousCoords) < 6:
-        return (0, 0)
-    
-    previousX, previousY = previousCoords.pop(0)
-
-    XDelta = 0
-    YDelta = 0
-    for x in previousCoords:
-        XDelta += x[0] - previousX
-        YDelta += x[1] - previousY
-
-        previousX = x[0]
-        previousY = x[1]
-
-    averageXDelta = XDelta / 5
-    averageYDelta = YDelta / 5
-
-    speed = math.sqrt(averageXDelta**2 + averageYDelta**2)
-
-    return averageXDelta, averageYDelta, speed
-
-def evaluateAngle(coords, xGoal, yGoal, XspeedDelta, YspeedDelta):
-    xAngle = 0
-    yAngle = 0
-
-    xAngle = XspeedDelta / 40 * -4
-
-    yAngle = YspeedDelta / 40 * -4
-
-
-    value = (coords[0] - xGoal) / 450
-    xAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -3
-    
-    value = (coords[1] - yGoal) / 450
-    yAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -3
-
-    return yAngle, xAngle
-
-# Initialize dfthe camera once
-camera = initialize_camera()
-
-fool = input("lay the ball on top")
-
-tick = 0
-
-goalX = 600
-goalY = 600
-
-while True:
-    tick+=1
-
-    coords = find_orange_object_coordinates(camera)
-    if coords:
-        velocityData = getBallVelocityVector(coords)
-
-        XspeedDelta = velocityData[0]
-        YspeedDelta = velocityData[1]
-        vectorSpeed = math.sqrt(XspeedDelta**2 + YspeedDelta**2)
-
-        print(XspeedDelta)
-        print(YspeedDelta)
-
-        angles = evaluateAngle(coords, goalX, goalY, XspeedDelta, YspeedDelta)
-
-        setPlateAngle(angles[0], angles[1])
-
-
-        print(f"Largest Orange Object - X: {coords[0]}, Y: {coords[1]}")
-        print(f"XAngle:  {angles[0]}  YAngle:  {angles[1]}")
-    else:
-        print("No orange object detected.")
-
-    goalX = 600
-    goalY = 600
-
-
-        
-
-# Stop the camera when done
-camera.stop()
-cv2.destroyAllWindows()
-
-resetPlate()

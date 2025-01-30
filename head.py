@@ -1,0 +1,3 @@
+import movementFunctions
+
+centerPlate()
