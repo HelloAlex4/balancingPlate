@@ -9,12 +9,17 @@ pastYError = []
 pastVectorSpeed = []
 
 def evaluateAdjustion(xError, yError, vectorSpeed):
+    global pastXError
+    global pastYError
+    global pastVectorSpeed
+
+
     pastXError.append(xError)
     pastYError.append(yError)
     pastVectorSpeed.append(vectorSpeed)
 
-    averagXError = 0
-    averagYError = 0
+    averageXError = 0
+    averageYError = 0
     averageVectorSpeed = 0
 
     if len(pastXError) > 6:
