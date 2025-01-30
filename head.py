@@ -43,7 +43,7 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
         pastVectorSpeed.pop(0)
 
     if averageVectorSpeed < 5:
-        if abs(averageYError) > 90:
+        if abs(averageXError) > 90:
             if averageXError > 0:
                 xAngleAdjustor += 0.4
             else:
@@ -53,8 +53,8 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
             pastYError = []
             pastVectorSpeed = []
 
-        if abs(averageXError) > 90:
-            if averageVectorSpeed > 0:
+        if abs(averageYError) > 90:
+            if averageYError > 0:
                 yAngleAdjustor += 0.4
             else:
                 yAngleAdjustor -= 0.4
