@@ -341,8 +341,9 @@ def evaluateAngle(coords, xGoal, yGoal, XspeedDelta, YspeedDelta):
 
     return yAngle, xAngle
 
+#git
 
-# Initialize the camera once
+# Initialize dfthe camera once
 camera = initialize_camera()
 
 fool = input("lay the ball on top")
