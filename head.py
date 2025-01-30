@@ -69,10 +69,10 @@ def evaluateAngle(coords, xVelocity, yVelocity, vectorSpeed):
     yAngle = yVelocity / 40 * -3
 
     value = (coords[0] - goalX) / 450
-    xAngle += (value ** 0.9 if value >= 0 else -(-value) ** 0.9) * -3
+    xAngle += (value ** 1 if value >= 0 else -(-value) ** 1) * -3
     
     value = (coords[1] - goalY) / 450
-    yAngle += (value ** 0.9 if value >= 0 else -(-value) ** 0.9) * -3
+    yAngle += (value ** 1 if value >= 0 else -(-value) ** 1) * -3
 
     return xAngle + xAngleAdjustor, yAngle + yAngleAdjustor
 
