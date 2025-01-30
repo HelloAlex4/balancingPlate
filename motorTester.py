@@ -341,8 +341,6 @@ def evaluateAngle(coords, xGoal, yGoal, XspeedDelta, YspeedDelta):
 
     return yAngle, xAngle
 
-#git
-
 # Initialize dfthe camera once
 camera = initialize_camera()
 
@@ -352,7 +350,7 @@ tick = 0
 
 goalX = 600
 goalY = 600
-#kjf
+
 while True:
     tick+=1
 
