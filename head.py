@@ -8,6 +8,8 @@ pastXError = []
 pastYError = []
 pastVectorSpeed = []
 
+adjustorCountdown = 0
+
 def evaluateAdjustion(xError, yError, vectorSpeed):
     global pastXError
     global pastYError
