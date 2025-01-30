@@ -94,7 +94,7 @@ def calculate_theta(h_desired):
     return theta_solution[0]  # Return the first (and only) solution
 
 def goToAngle(motor_index, angle, speed):
-    currentAngle = motors[motor_index]['ticks'] * 0.9 - 30
+    currentAngle = motors[motor_index]['ticks'] * 0.45 - 30
 
     if currentAngle > angle:
         direction = 0
@@ -113,7 +113,7 @@ def rotate_motor(motor, direction, degree, speed):
     # Set direction (0 for clockwise, 1 for counterclockwise)
     motor_lines[f"{motor['name']}_dir"].set_value(direction)
     
-    steps = int(degree * 400 / 360)  # Calculate steps based on degree
+    steps = int(degree * 800 / 360)  # Calculate steps based on degree
     
     # Find the motor index in the motors list
     motor_index = next(i for i, m in enumerate(motors) if m['name'] == motor['name'])
