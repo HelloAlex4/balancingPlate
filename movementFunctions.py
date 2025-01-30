@@ -108,7 +108,7 @@ def goToHeight(motor_index, height, speed):
     goToAngle(motor_index, desiredAngle, speed)
 
 def rotate_motor(motor, direction, degree, speed):
-    speed = 0.001
+    speed = 0.0005
 
     # Set direction (0 for clockwise, 1 for counterclockwise)
     motor_lines[f"{motor['name']}_dir"].set_value(direction)
