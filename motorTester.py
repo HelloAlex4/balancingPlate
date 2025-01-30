@@ -364,7 +364,8 @@ while True:
         YspeedDelta = velocityData[1]
         vectorSpeed = math.sqrt(XspeedDelta**2 + YspeedDelta**2)
 
-        print(vectorSpeed)
+        print(XspeedDelta)
+        print(YspeedDelta)
 
         angles = evaluateAngle(coords, goalX, goalY, XspeedDelta, YspeedDelta)
 
