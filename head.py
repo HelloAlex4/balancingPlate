@@ -16,6 +16,10 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
     global xAngleAdjustor
     global yAngleAdjustor
 
+    if adjustorCountdown > 0:
+        adjustorCountdown -= 1
+        return
+
     pastXError.append(xError)
     pastYError.append(yError)
     pastVectorSpeed.append(vectorSpeed)
@@ -49,6 +53,8 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
             else:
                 yAngleAdjustor += 0.3
             
+            adjustorCountdown = 15
+            
             pastXError = []
             pastYError = []
             pastVectorSpeed = []
@@ -58,6 +64,8 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
                 xAngleAdjustor -= 0.3
             else:
                 xAngleAdjustor += 0.3
+
+            adjustorCountdown = 15
 
             pastXError = []
             pastYError = []
@@ -70,17 +78,17 @@ def evaluateAngle(coords, xVelocity, yVelocity, vectorSpeed):
     xAngle = 0
     yAngle = 0
 
-    if abs(xVelocity) > 3:
+    if abs(xVelocity) > 2:
         xAngle = (xVelocity ** 1.4 if xVelocity >= 0 else -(-xVelocity) ** 1.4) / 100  * -2.6
 
-    if abs(yVelocity) > 3:
+    if abs(yVelocity) > 2:
         yAngle = (yVelocity ** 1.4 if yVelocity >= 0 else -(-yVelocity) ** 1.4) / 100 * -2.6
 
     value = (coords[0] - goalX) / 450
-    xAngle += (value ** 1 if value >= 0 else -(-value) ** 1) * -3
+    xAngle += (value ** 1 if value >= 0 else -(-value) ** 1) * -3.5
     
     value = (coords[1] - goalY) / 450
-    yAngle += (value ** 1 if value >= 0 else -(-value) ** 1) * -3
+    yAngle += (value ** 1 if value >= 0 else -(-value) ** 1) * -3.5
 
     print("xAngleAdjustor: " + str(xAngleAdjustor))
     print("yAngleAdjustor: " + str(yAngleAdjustor))
