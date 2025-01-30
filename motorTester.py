@@ -378,8 +378,6 @@ while True:
 
     goalX = 600
     goalY = 600
-    
-    print(tick)
 
 
         
