@@ -58,8 +58,6 @@ def evaluateAngle(coords):
     
     return xAngle, yAngle
 
-
-
 goalX = 600
 goalY = 600
 
@@ -82,7 +80,7 @@ while True:
         if velocityData == (0, 0, 0):
             continue
 
-        angles = evaluateAngle(coords, Xvelocity, Yvelocity, vectorspeed)
+        angles = evaluateAngle(coords)
 
         print(coords)
         print(Xvelocity)
