@@ -46,7 +46,6 @@ class PIDController:
         
         return output_x, output_y
 
-# Instantiate the PID controller with appropriate gains
 pid_controller = PIDController(kp=0.02, ki=0.001, kd=0.01)
 
 def evaluateAngle(coords):
@@ -56,7 +55,7 @@ def evaluateAngle(coords):
     # Get PID adjustments
     xAngle, yAngle = pid_controller.compute(error_x, error_y)
     
-    return xAngle, yAngle
+    return -xAngle, -yAngle
 
 goalX = 600
 goalY = 600
