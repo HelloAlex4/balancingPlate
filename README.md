@@ -86,3 +86,22 @@ The system requires a stable power source to operate the motors and microcontrol
 - The plate’s weight and balance are critical to ensure smooth and stable movement.
 
 ## 5. Software Impelementation
+The software consists of 3 main parts:
+- Tracking functions (functions used for tracking the ball)
+- movement functions (functions used for moving the plate)
+- head controll loop (loop to calculate position of plate with a PID function)
+
+### 5.1 tracking functions
+
+### 5.2 movement functions
+
+### 5.3 head controll loop
+
+
+
+
+
+
+
+
+
