@@ -87,10 +87,10 @@ def evaluateAngle(coords, xVelocity, yVelocity, vectorSpeed):
     yAngle = (yVelocity ** 1.4 if yVelocity >= 0 else -(-yVelocity) ** 1.4) / 100 * -3
 
     value = (coords[0] - goalX) / 450
-    xAngle += (value ** 1 if value >= 0 else -(-value) ** 1) * -4
+    xAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -4
     
     value = (coords[1] - goalY) / 450
-    yAngle += (value ** 1 if value >= 0 else -(-value) ** 1) * -4
+    yAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -4
 
     print("xAngleAdjustor: " + str(xAngleAdjustor))
     print("yAngleAdjustor: " + str(yAngleAdjustor))
