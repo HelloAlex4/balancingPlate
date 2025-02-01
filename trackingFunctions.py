@@ -70,8 +70,8 @@ def getBallVelocityVector(coords):
         previousX = x[0]
         previousY = x[1]
 
-    averageXDelta = XDelta / 5
-    averageYDelta = YDelta / 5
+    averageXDelta = XDelta / 3
+    averageYDelta = YDelta / 3
 
     speed = math.sqrt(averageXDelta**2 + averageYDelta**2)
 
