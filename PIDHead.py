@@ -46,7 +46,7 @@ class PIDController:
         
         return output_x, output_y
 
-pid_controller = PIDController(kp=0.005, ki=0.0005, kd=0.05)
+pid_controller = PIDController(kp=0.005, ki=0.0005, kd=0.07)
 
 def evaluateAngle(coords):
     error_x = coords[0] - goalX
