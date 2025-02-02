@@ -1,4 +1,4 @@
-# Ball balancing Plate System
+# Ball balancing Plate System using custom PID function
 PUT PICTURE HERE
 
 ## 1. Project overview
@@ -89,19 +89,210 @@ The system requires a stable power source to operate the motors and microcontrol
 The software consists of 3 main parts:
 - Tracking functions (functions used for tracking the ball)
 - movement functions (functions used for moving the plate)
-- head controll loop (loop to calculate position of plate with a PID function)
+- head controll loop (loop to calculate position of plate with a custom PID function)
+
+These 3 system all work in parallel to eachother in different threads to make sure they dotn hinder eachother from running.
 
 ### 5.1 tracking functions
+The tracking functions are responsible for tracking the ball and calculating its exact velocity vector in real time. This data is then output back to the head file. The tracking function runns continuously in an external thread to not conflict with other functions.
 
-### 5.2 movement functions
+### 5.1.1 Position detector
+The system uses a Camera to capture live image frames of the plate at 30FPS then extracts the balls x, y position using by using a color filter.
+
+### 5.1.2 Velocity calculation
+The velocity is calculated by calculating the average x and y delta over 5 frames.
+The velocity vector is passed to the control system for prediction-based balancing.
+
+### 5.2.1 movement functions
+Movement functions are responsible for moving the motors based on an two input angles.
+
+### 5.2.2 Angle to Motor Height Conversion
+
+To achieve precise plate tilting, the system must compute how much **each of the three motors must move vertically** to match the required plate angles **(θₓ, θᵧ)**. This is done using **inverse kinematics**.
+
+Each of the **three motors** supports a corner of the plate. Tilting the plate along the **X and Y axes** changes the required height of each motor, which is calculated using the following formulas.
+
+---
+
+#### **Motor Height Calculation**  
+
+The required height changes for each motor **(h₁, h₂, h₃)** can be determined using the following equations:
+
+$$
+h_1 = L \cdot \tan(\theta_x) + W \cdot \tan(\theta_y)
+$$
+
+$$
+h_2 = L \cdot \tan(\theta_x) - W \cdot \tan(\theta_y)
+$$
+
+$$
+h_3 = -L \cdot \tan(\theta_x)
+$$
+
+Where:  
+- **$h_1, h_2, h_3$** = The required vertical movement of each motor.  
+- **$\theta_x, \theta_y$** = The desired tilt angles along the X and Y axes.  
+- **$L$** = Distance from the plate’s center to the motor along the X-axis.  
+- **$W$** = Distance from the plate’s center to the motor along the Y-axis.  
+
+---
+
+#### **Defining L and W Using Plate Geometry**  
+
+The **three-motor system** follows a **triangular configuration**, where motors are positioned symmetrically around the center.  
+
+Using **trigonometry**, we define **$L$ and $W$** in terms of the total **radial distance ($D$)** from the center to each motor:
+
+$$
+L = D \cdot \sin(30^\circ)
+$$
+
+$$
+W = D \cdot \cos(30^\circ)
+$$
+
+Where:  
+- **$D$** = The radial distance from the plate’s center to each motor.  
+- **$30^\circ$** = The angle between the motors in an **equilateral triangular layout**.
+
+---
+
+#### **Final Height Equations**  
+
+By substituting the **$L$ and $W$** equations into the original height equations, we obtain the final motor height calculations:
+
+$$
+h_1 = D \cdot \sin(30^\circ) \cdot \tan(\theta_x) - D \cdot \cos(30^\circ) \cdot \tan(\theta_y)
+$$
+
+$$
+h_2 = D \cdot \sin(30^\circ) \cdot \tan(\theta_x) + D \cdot \cos(30^\circ) \cdot \tan(\theta_y)
+$$
+
+$$
+h_3 = -D \cdot \tan(\theta_x)
+$$
+
+Where:  
+- **$D$** = Distance from the plate’s center to the motor.  
+- **$\theta_x, \theta_y$** = Desired tilt angles along the X and Y axes.  
+- **$h_1, h_2, h_3$** = The required vertical movement of each motor.  
+
+---
+
+### **Why This Calculation is Important**
+- **Precision Control:** Ensures the plate tilts correctly by calculating exact motor height changes.  
+- **Mechanical Stability:** Prevents excessive force on any single motor.  
+- **Smooth Motion Translation:** Bridges the gap between control inputs and physical movements.  
+
+This section forms the foundation of the motor control system, as the next steps will convert height changes into stepper motor angles.
+
+
+### 5.2.3 Height to angle calculation
+To calculate the motor angle in relation to the motor endpoint height and the other way arround the following 2 fomulas are used.
+
+**height**
+
+$$
+h(\theta) = L_1 \cdot \sin(\theta) + L_2 \cdot \sin\left(\cos^{-1}\left(\frac{x_2 - L_1 \cdot \cos(\theta)}{L_2}\right)\right)
+$$
+
+where:
+- L_1  and  L_2  are the lengths of the first and second arms, respectively.
+- x_2  is the fixed horizontal position of the endpoint.
+- \theta  is the angle of the first arm relative to the horizontal.
+
+**angle:**
+
+To calculate the required angle  \theta  for a given desired height  h_{\text{desired}} , the system uses a combination of inverse kinematics and a numerical root-finding algorithm. The formula used for calculating the angles is the same as the one for calculating the height mentioned above, except that the fsolve method is used to iterativly solve for the angle by minimizing the difference between h(\theta) and h_{\text{desired}}.
+This is necessary since the relationship between h(\theta) and \theta is nonlinear.
+
+This approach ensures that the angle calculation accounts for the geometric constraints of the system while maintaining high precision.
+
+### 5.2.4 Motor movement
+Motors are moved linearly and directly by setting the direction pin and toggling the step pin from the Raspberry Pi. For smooth and precise movement, the motors operate in 1/4 steps with a 0.0001-second delay between each tick. The current motor position is tracked by counting the ticks each motor has moved since the start of the program. This is possible because all motors start at the same low position during initialization and only move upward after the program begins.
 
 ### 5.3 head controll loop
+The head controll loop uses a custom PID function to calculate the desired angles based on the velocity vector and the balls position.
+
+### 5.3.1 custom PID function
+A custom PID function is used in comparison to the traditional function to allow for more precise controll. The custom function stil consists of the 3 PID parts.
+
+- **proportional** - The proportional term moves the ball to the goal position based on the current error
+- **Integral** - The integral term accumulates past errors and corrects any error that remains after proportional correction
+- **Derivative** - The derivative term corrects for rapid changes in the balls position
+
+Since a custom PID implementation is being used more details will be elaborated on in the following paragraphs.
+
+### 5.3.2 Proportional term
+The proportional term calculates the recommended angle based on the ball’s current position relative to the target. However, the system does not move the plate proportionally to the ball’s position. Instead, it uses a root function to create a non-linear response, which smooths movements for small deviations while applying stronger corrections for larger deviations.
+
+The proportional term is defined as:
+
+$$
+\text{Angle} = -4 \cdot \left( \frac{\text{coords} - \text{goal}}{450} \right)^{0.8}
+$$
+
+Where:
+	•	 \text{coords} : The current X,Y-coordinate of the ball.
+	•	 \text{goal} : The target X,Y-coordinate for the ball.
+	•	 450 : A scaling factor to normalize the positional difference.
+	•	 0.8 : The exponent applies a non-linear smoothing, reducing the impact of large deviations.
+	•	 -4 : A proportional scaling factor that determines the angle’s magnitude.
+
+For negative positional differences ( \text{coords}_y < \text{goalY} ), the system adjusts the sign of the correction to maintain proper direction:
+
+$$
+\text{Angle} = -4 \cdot \text{sgn}(\Delta) \cdot |\Delta|^{0.8}, \quad \text{where } \Delta = \frac{\text{coords} - \text{goal}}{450}.
+$$
+
+This approach ensures that the plate responds to the ball’s position non-linearly:
+	•	Small deviations result in subtle corrections.
+	•	Large deviations trigger stronger corrections, but the root function prevents overly aggressive tilts.
+
+By using this non-linear method, the system achieves more stable and intuitive control over the plate.
 
 
+### 5.3.3 Integral Term
+The integral term does not correct proportionally to the balls position but uses a fixed correction based on the motors minimum turning tick, being 0.45 degrees in this case.
+The integral Term only comes into effect when the balls average velocity per frame is bellow 2. When this case comes into effect and the balls error from the target is above 100 the plates angle is adjusted towards the goal position by 0.45 degrees. This only happens at a maximum of every 15 frames to allow the ball to start moving.
 
+### 5.3.4 Derivative Term
+The derivative term calculates the recommended angle adjustments based on the ball’s velocity along both the X and Y axes. Unlike the proportional term, which reacts to the ball’s position, the derivative term accounts for the rate of change in position (velocity), helping to stabilize the system by damping overshoot or oscillations along both axes.
 
+The derivative terms for the X and Y axes are defined as:
 
+$$
+\text{Angle}_{x,\text{derivative}} = \frac{-3}{100} \cdot \left( |v_x|^{1.4} \cdot \text{sgn}(v_x) \right)
+$$
 
+$$
+\text{Angle}_{y,\text{derivative}} = \frac{-3}{100} \cdot \left( |v_y|^{1.4} \cdot \text{sgn}(v_y) \right)
+$$
 
+Where:
+	•	 v_x  and  v_y : The ball’s velocities along the X and Y axes, respectively.
+	•	 |v_x|^{1.4}  and  |v_y|^{1.4} : Apply a non-linear power function to scale the velocities, increasing the damping effect for higher speeds.
+	•	 \text{sgn}(v_x)  and  \text{sgn}(v_y) : Preserve the direction of the velocities (positive or negative).
+	•	 \frac{-3}{100} : Scales the output to ensure the corrections remain smooth and subtle.
 
+Non-Linear Behavior
 
+The derivative term uses an exponent of 1.4 to create a non-linear damping effect:
+	•	Small velocities lead to smaller corrections, ensuring smooth plate movement.
+	•	Large velocities are damped more aggressively, reducing the risk of overshooting or destabilizing the system.
+
+Role in the Control System
+
+The derivative term is crucial for stabilizing the ball by:
+	1.	Counteracting momentum: Slowing the ball down as it approaches the target.
+	2.	Reducing oscillations: Preventing the ball from overshooting the goal position.
+
+By applying the derivative term to both axes, the system ensures that the plate responds dynamically to stabilize the ball’s movement in all directions, resulting in a smoother and more stable control response.
+
+### 5.3.5 Terms
+All 3 of these terms recommend their angle adjustion which then gets summed together to get the final angle the plate will go to.
+All 3 parts of this system run in parallel ande different threads to make sure they work smoothly together.
+
+## 6.1 Results and Demonstration
