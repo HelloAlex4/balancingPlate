@@ -61,33 +61,31 @@ def evaluateAdjustion(xError, yError, vectorSpeed):
         pastYError.pop(0)
         pastVectorSpeed.pop(0)
 
-    if adjustorCountdown > 10:
-        continue
-    
-    if averageVectorSpeed < 2.5:
-        if abs(averageXError) > 100:
-            if averageXError > 0:
-                yAngleAdjustor -= 0.45
-            else:
-                yAngleAdjustor += 0.45
-            
-            adjustorCountdown = 10
-            
-            pastXError = []
-            pastYError = []
-            pastVectorSpeed = []
+    if adjustorCountdown < 10:
+        if averageVectorSpeed < 2.5:
+            if abs(averageXError) > 100:
+                if averageXError > 0:
+                    yAngleAdjustor -= 0.45
+                else:
+                    yAngleAdjustor += 0.45
+                
+                adjustorCountdown = 10
+                
+                pastXError = []
+                pastYError = []
+                pastVectorSpeed = []
 
-        if abs(averageYError) > 100:
-            if averageYError > 0:
-                xAngleAdjustor -= 0.45
-            else:
-                xAngleAdjustor += 0.45
+            if abs(averageYError) > 100:
+                if averageYError > 0:
+                    xAngleAdjustor -= 0.45
+                else:
+                    xAngleAdjustor += 0.45
 
-            adjustorCountdown = 10
+                adjustorCountdown = 10
 
-            pastXError = []
-            pastYError = []
-            pastVectorSpeed = []
+                pastXError = []
+                pastYError = []
+                pastVectorSpeed = []
         
 
 def evaluateAngle(coords, xVelocity, yVelocity, vectorSpeed):
