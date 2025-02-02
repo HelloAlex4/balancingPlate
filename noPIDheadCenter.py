@@ -140,4 +140,5 @@ for thread in threads:
     thread.start()
 
 while True:
-    tick += 1
+    time.sleep(0.2)
+    print(angles)
