@@ -15,6 +15,8 @@ adjustorCountdown = 0
 goalX = 600
 goalY = 600
 
+coords = None
+
 angles = None
 
 tick = 0
@@ -96,16 +98,17 @@ def evaluateAngle(coords, xVelocity, yVelocity, vectorSpeed):
     yAngle = (yVelocity ** 1.5 if yVelocity >= 0 else -(-yVelocity) ** 1.5) / 100 * -2.5
 
     value = (coords[0] - goalX) / 450
-    xAngle += (value ** 0.7 if value >= 0 else -(-value) ** 0.7) * -3
+    xAngle += (value ** 0.7 if value >= 0 else -(-value) ** 0.7) * -2.5
     
     value = (coords[1] - goalY) / 450
-    yAngle += (value ** 0.7 if value >= 0 else -(-value) ** 0.7) * -3
+    yAngle += (value ** 0.7 if value >= 0 else -(-value) ** 0.7) * -2.5
 
     return xAngle + xAngleAdjustor, yAngle + yAngleAdjustor
 
 
 def angleCalcThread():
     global angles
+    global coords
 
     while True:
         coords = tr.find_orange_object_coordinates()
