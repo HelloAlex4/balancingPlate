@@ -97,6 +97,28 @@ def evaluateAngle(coords, xVelocity, yVelocity, vectorSpeed):
 
     return xAngle + xAngleAdjustor, yAngle + yAngleAdjustor
 
+
+def angleCalcThread():
+    global angles
+
+    while True:
+        coords = tr.find_orange_object_coordinates()
+        if coords:
+            velocityData = tr.getBallVelocityVector(coords)
+            Xvelocity = velocityData[0]
+            Yvelocity = velocityData[1]
+            vectorspeed = velocityData[2]
+            if velocityData == (0, 0, 0):
+                continue
+            angles = evaluateAngle(coords, Xvelocity, Yvelocity, vectorspeed)
+
+def movePlateThread():
+    global angles
+    while True:
+        if angles:
+            mv.setPlateAngle(angles[0], angles[1])
+            angles = None
+
 goalX = 600
 goalY = 600
 
@@ -106,27 +128,13 @@ mv.centerPlate()
 
 wait = input("put the ball on the plate")
 
+threads = [
+    threading.Thread(target=angleCalcThread),
+    threading.Thread(target=movePlateThread)
+]
+
+for thread in threads:
+    thread.start()
+
 while True:
     tick += 1
-
-    coords = tr.find_orange_object_coordinates()
-    if coords:
-        velocityData = tr.getBallVelocityVector(coords)
-        Xvelocity = velocityData[0]
-        Yvelocity = velocityData[1]
-        vectorspeed = velocityData[2]
-
-        if velocityData == (0, 0, 0):
-            continue
-
-        angles = evaluateAngle(coords, Xvelocity, Yvelocity, vectorspeed)
-
-        print(coords)
-        print(Xvelocity)
-        print(Yvelocity)
-        print(vectorspeed)
-        print(angles)
-
-        mv.setPlateAngle(angles[0], angles[1])
-    else:
-        print("no object found")
