@@ -123,6 +123,8 @@ def movePlateThread():
 goalX = 600
 goalY = 600
 
+angles = None
+
 tick = 0
 
 mv.centerPlate()
