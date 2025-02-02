@@ -96,10 +96,10 @@ def evaluateAngle(coords, xVelocity, yVelocity, vectorSpeed):
     yAngle = (yVelocity ** 1.5 if yVelocity >= 0 else -(-yVelocity) ** 1.5) / 100 * -2.5
 
     value = (coords[0] - goalX) / 450
-    xAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -3
+    xAngle += (value ** 0.7 if value >= 0 else -(-value) ** 0.7) * -3
     
     value = (coords[1] - goalY) / 450
-    yAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -3
+    yAngle += (value ** 0.7 if value >= 0 else -(-value) ** 0.7) * -3
 
     return xAngle + xAngleAdjustor, yAngle + yAngleAdjustor
 
@@ -140,5 +140,6 @@ for thread in threads:
     thread.start()
 
 while True:
-    time.sleep(0.2)
+    time.sleep(0.1)
     print(angles)
+    print(coords)
