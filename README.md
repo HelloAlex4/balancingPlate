@@ -235,11 +235,11 @@ $$
 $$
 
 Where:
-	•	 \text{coords} : The current X,Y-coordinate of the ball.
-	•	 \text{goal} : The target X,Y-coordinate for the ball.
-	•	 450 : A scaling factor to normalize the positional difference.
-	•	 0.8 : The exponent applies a non-linear smoothing, reducing the impact of large deviations.
-	•	 -4 : A proportional scaling factor that determines the angle’s magnitude.
+- \text{coords} : The current X,Y-coordinate of the ball.
+- \text{goal} : The target X,Y-coordinate for the ball.
+- 450 : A scaling factor to normalize the positional difference.
+- 0.8 : The exponent applies a non-linear smoothing, reducing the impact of large deviations.
+- -4 : A proportional scaling factor that determines the angle’s magnitude.
 
 For negative positional differences ( \text{coords}_y < \text{goalY} ), the system adjusts the sign of the correction to maintain proper direction:
 
@@ -248,8 +248,8 @@ $$
 $$
 
 This approach ensures that the plate responds to the ball’s position non-linearly:
-	•	Small deviations result in subtle corrections.
-	•	Large deviations trigger stronger corrections, but the root function prevents overly aggressive tilts.
+- Small deviations result in subtle corrections.
+- Large deviations trigger stronger corrections, but the root function prevents overly aggressive tilts.
 
 By using this non-linear method, the system achieves more stable and intuitive control over the plate.
 
@@ -272,16 +272,16 @@ $$
 $$
 
 Where:
-	•	 v_x  and  v_y : The ball’s velocities along the X and Y axes, respectively.
-	•	 |v_x|^{1.4}  and  |v_y|^{1.4} : Apply a non-linear power function to scale the velocities, increasing the damping effect for higher speeds.
-	•	 \text{sgn}(v_x)  and  \text{sgn}(v_y) : Preserve the direction of the velocities (positive or negative).
-	•	 \frac{-3}{100} : Scales the output to ensure the corrections remain smooth and subtle.
+v_x  and  v_y : The ball’s velocities along the X and Y axes, respectively.
+|v_x|^{1.4}  and  |v_y|^{1.4} : Apply a non-linear power function to scale the velocities, increasing the damping effect for higher speeds.
+\text{sgn}(v_x)  and  \text{sgn}(v_y) : Preserve the direction of the velocities (positive or negative).
+\frac{-3}{100} : Scales the output to ensure the corrections remain smooth and subtle.
 
 Non-Linear Behavior
 
 The derivative term uses an exponent of 1.4 to create a non-linear damping effect:
-	•	Small velocities lead to smaller corrections, ensuring smooth plate movement.
-	•	Large velocities are damped more aggressively, reducing the risk of overshooting or destabilizing the system.
+- Small velocities lead to smaller corrections, ensuring smooth plate movement.
+- Large velocities are damped more aggressively, reducing the risk of overshooting or destabilizing the system.
 
 Role in the Control System
 
@@ -296,3 +296,9 @@ All 3 of these terms recommend their angle adjustion which then gets summed toge
 All 3 parts of this system run in parallel ande different threads to make sure they work smoothly together.
 
 ## 6.1 Results and Demonstration
+
+
+
+
+
+
