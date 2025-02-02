@@ -119,7 +119,6 @@ def movePlateThread():
     while True:
         if angles:
             mv.setPlateAngle(angles[0], angles[1])
-            angles = None
 
 goalX = 600
 goalY = 600
