@@ -1,4 +1,4 @@
-# Ball balancing Plate System
+# Ball balancing Plate System using custom PID function
 PUT PICTURE HERE
 
 ## 1. Project overview
@@ -90,6 +90,8 @@ The software consists of 3 main parts:
 - Tracking functions (functions used for tracking the ball)
 - movement functions (functions used for moving the plate)
 - head controll loop (loop to calculate position of plate with a custom PID function)
+
+These 3 system all work in parallel to eachother in different threads to make sure they dotn hinder eachother from running.
 
 ### 5.1 tracking functions
 The tracking functions are responsible for tracking the ball and calculating its exact velocity vector in real time. This data is then output back to the head file. The tracking function runns continuously in an external thread to not conflict with other functions.
@@ -224,12 +226,73 @@ A custom PID function is used in comparison to the traditional function to allow
 Since a custom PID implementation is being used more details will be elaborated on in the following paragraphs.
 
 ### 5.3.2 Proportional term
+The proportional term calculates the recommended angle based on the ball’s current position relative to the target. However, the system does not move the plate proportionally to the ball’s position. Instead, it uses a root function to create a non-linear response, which smooths movements for small deviations while applying stronger corrections for larger deviations.
+
+The proportional term is defined as:
+
+$$
+\text{Angle} = -4 \cdot \left( \frac{\text{coords} - \text{goal}}{450} \right)^{0.8}
+$$
+
+Where:
+	•	 \text{coords} : The current X,Y-coordinate of the ball.
+	•	 \text{goal} : The target X,Y-coordinate for the ball.
+	•	 450 : A scaling factor to normalize the positional difference.
+	•	 0.8 : The exponent applies a non-linear smoothing, reducing the impact of large deviations.
+	•	 -4 : A proportional scaling factor that determines the angle’s magnitude.
+
+For negative positional differences ( \text{coords}_y < \text{goalY} ), the system adjusts the sign of the correction to maintain proper direction:
+
+$$
+\text{Angle} = -4 \cdot \text{sgn}(\Delta) \cdot |\Delta|^{0.8}, \quad \text{where } \Delta = \frac{\text{coords} - \text{goal}}{450}.
+$$
+
+This approach ensures that the plate responds to the ball’s position non-linearly:
+	•	Small deviations result in subtle corrections.
+	•	Large deviations trigger stronger corrections, but the root function prevents overly aggressive tilts.
+
+By using this non-linear method, the system achieves more stable and intuitive control over the plate.
 
 
+### 5.3.3 Integral Term
+The integral term does not correct proportionally to the balls position but uses a fixed correction based on the motors minimum turning tick, being 0.45 degrees in this case.
+The integral Term only comes into effect when the balls average velocity per frame is bellow 2. When this case comes into effect and the balls error from the target is above 100 the plates angle is adjusted towards the goal position by 0.45 degrees. This only happens at a maximum of every 15 frames to allow the ball to start moving.
 
+### 5.3.4 Derivative Term
+The derivative term calculates the recommended angle adjustments based on the ball’s velocity along both the X and Y axes. Unlike the proportional term, which reacts to the ball’s position, the derivative term accounts for the rate of change in position (velocity), helping to stabilize the system by damping overshoot or oscillations along both axes.
 
+The derivative terms for the X and Y axes are defined as:
 
+$$
+\text{Angle}_{x,\text{derivative}} = \frac{-3}{100} \cdot \left( |v_x|^{1.4} \cdot \text{sgn}(v_x) \right)
+$$
 
+$$
+\text{Angle}_{y,\text{derivative}} = \frac{-3}{100} \cdot \left( |v_y|^{1.4} \cdot \text{sgn}(v_y) \right)
+$$
 
+Where:
+	•	 v_x  and  v_y : The ball’s velocities along the X and Y axes, respectively.
+	•	 |v_x|^{1.4}  and  |v_y|^{1.4} : Apply a non-linear power function to scale the velocities, increasing the damping effect for higher speeds.
+	•	 \text{sgn}(v_x)  and  \text{sgn}(v_y) : Preserve the direction of the velocities (positive or negative).
+	•	 \frac{-3}{100} : Scales the output to ensure the corrections remain smooth and subtle.
 
+Non-Linear Behavior
 
+The derivative term uses an exponent of 1.4 to create a non-linear damping effect:
+	•	Small velocities lead to smaller corrections, ensuring smooth plate movement.
+	•	Large velocities are damped more aggressively, reducing the risk of overshooting or destabilizing the system.
+
+Role in the Control System
+
+The derivative term is crucial for stabilizing the ball by:
+	1.	Counteracting momentum: Slowing the ball down as it approaches the target.
+	2.	Reducing oscillations: Preventing the ball from overshooting the goal position.
+
+By applying the derivative term to both axes, the system ensures that the plate responds dynamically to stabilize the ball’s movement in all directions, resulting in a smoother and more stable control response.
+
+### 5.3.5 Terms
+All 3 of these terms recommend their angle adjustion which then gets summed together to get the final angle the plate will go to.
+All 3 parts of this system run in parallel ande different threads to make sure they work smoothly together.
+
+## 6.1 Results and Demonstration
