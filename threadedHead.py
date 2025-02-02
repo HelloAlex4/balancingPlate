@@ -12,6 +12,13 @@ pastVectorSpeed = []
 
 adjustorCountdown = 0
 
+goalX = 600
+goalY = 600
+
+angles = None
+
+tick = 0
+
 def evaluateAdjustion(xError, yError, vectorSpeed):
     global pastXError
     global pastYError
@@ -89,13 +96,10 @@ def evaluateAngle(coords, xVelocity, yVelocity, vectorSpeed):
     yAngle = (yVelocity ** 1.4 if yVelocity >= 0 else -(-yVelocity) ** 1.4) / 100 * -3
 
     value = (coords[0] - goalX) / 450
-    xAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -4
+    xAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -3
     
     value = (coords[1] - goalY) / 450
-    yAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -4
-
-    print("xAngleAdjustor: " + str(xAngleAdjustor))
-    print("yAngleAdjustor: " + str(yAngleAdjustor))
+    yAngle += (value ** 0.8 if value >= 0 else -(-value) ** 0.8) * -3
 
     return xAngle + xAngleAdjustor, yAngle + yAngleAdjustor
 
@@ -120,16 +124,12 @@ def movePlateThread():
         if angles:
             mv.setPlateAngle(angles[0], angles[1])
 
-goalX = 600
-goalY = 600
-
-angles = None
-
-tick = 0
 
 mv.centerPlate()
 
 wait = input("put the ball on the plate")
+
+
 
 threads = [
     threading.Thread(target=angleCalcThread),
