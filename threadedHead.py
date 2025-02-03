@@ -145,7 +145,7 @@ for thread in threads:
 tick = 0
 
 while True:
-    time.sleep(0.1)
+    time.sleep(0.01)
     print(angles)
     print(coords)
     tick += 1
