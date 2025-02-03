@@ -295,6 +295,8 @@ By applying the derivative term to both axes, the system ensures that the plate 
 All 3 of these terms recommend their angle adjustion which then gets summed together to get the final angle the plate will go to.
 All 3 parts of this system run in parallel ande different threads to make sure they work smoothly together.
 
+### 5.4 Additional controll loop
+An additional controll loop can be added to controll the balls position dynamically. One thing that could be accomplished by this is making the ball roll in different shapes such as a square. This loop also runns in parallel in a sepperate thread to compeletely seperate the goal position adjustment and other loops
 
 ## 6 Demonstration and Results
 
