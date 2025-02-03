@@ -304,7 +304,7 @@ https://github.com/user-attachments/assets/8e9c09fc-2c4e-402d-9fc7-06fbf60173ed
 More videos and pictures can be found within the reposotory folder**
 
 
-https://github.com/user-attachments/assets/7c7f4390-5ed0-4abd-bd12-84e088d4dc7a
+https://github.com/user-attachments/assets/dbcbb28b-f67d-4a76-b944-2c65bf40232f
 
 **Demonstration parallel to the plate for a better vision of the System in action while the ball is being pushed**
 
