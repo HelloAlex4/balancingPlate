@@ -128,7 +128,6 @@ def movePlateThread():
         if angles:
             mv.setPlateAngle(angles[0], angles[1])
 
-
 mv.centerPlate()
 
 wait = input("put the ball on the plate")
@@ -143,7 +142,27 @@ threads = [
 for thread in threads:
     thread.start()
 
+tick = 0
+
 while True:
     time.sleep(0.1)
     print(angles)
     print(coords)
+    tick += 1
+
+    if tick > 100:
+        goalX = 850
+        goalY = 850
+    if tick > 200:
+        goalX = 250
+        goalY = 850
+    if tick > 300:
+        goalX = 250
+        goalY = 250
+    if tick > 400:
+        goalX = 850
+        goalY = 250
+    if tick > 500:
+        goalX = 850
+        goalY = 850
+        tick = 0
