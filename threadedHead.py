@@ -157,7 +157,7 @@ while True:
         goalX = 350
         goalY = 750
     if tick > 300:
-        goalX = 350
+        goalX = 300
         goalY = 350
     if tick > 400:
         goalX = 750
