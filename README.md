@@ -296,6 +296,16 @@ All 3 of these terms recommend their angle adjustion which then gets summed toge
 All 3 parts of this system run in parallel ande different threads to make sure they work smoothly together.
 
 
+## 6 Demonstration and Results
 
+https://github.com/user-attachments/assets/8e9c09fc-2c4e-402d-9fc7-06fbf60173ed
+
+**Demonstration of the ball being pushed and setteling again.
+More videos and pictures can be found within the reposotory folder**
+
+
+https://github.com/user-attachments/assets/7c7f4390-5ed0-4abd-bd12-84e088d4dc7a
+
+**Demonstration parallel to the plate for a better vision of the System in action while the ball is being pushed**
 
 
