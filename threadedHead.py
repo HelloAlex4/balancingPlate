@@ -151,18 +151,18 @@ while True:
     tick += 1
 
     if tick > 100:
-        goalX = 850
-        goalY = 850
+        goalX = 750
+        goalY = 750
     if tick > 200:
-        goalX = 250
-        goalY = 850
+        goalX = 350
+        goalY = 750
     if tick > 300:
-        goalX = 250
-        goalY = 250
+        goalX = 350
+        goalY = 350
     if tick > 400:
-        goalX = 850
-        goalY = 250
+        goalX = 750
+        goalY = 350
     if tick > 500:
-        goalX = 850
-        goalY = 850
+        goalX = 750
+        goalY = 750
         tick = 0
