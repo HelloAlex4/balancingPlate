@@ -18,7 +18,7 @@ The system utilizes three stepper motors to balance the plate while a camera tra
 
 #### 2. Control System
 - A Raspberry Pi serves as the central controller.
-- A PID-like control system calculates the required plate tilt to maintain balance.
+- A PID control system calculates the required plate tilt to maintain balance.
 - A closed-loop feedback system ensures smooth and accurate corrections in real time.
 
 #### 3. Motor Movement
@@ -208,6 +208,8 @@ where:
 To calculate the required angle  \theta  for a given desired height  h_{\text{desired}} , the system uses a combination of inverse kinematics and a numerical root-finding algorithm. The formula used for calculating the angles is the same as the one for calculating the height mentioned above, except that the fsolve method is used to iterativly solve for the angle by minimizing the difference between h(\theta) and h_{\text{desired}}.
 This is necessary since the relationship between h(\theta) and \theta is nonlinear.
 
+This calculation provides only an approximation to the real plate height since the turning radius of the plate arround the center of the plate is not taken into account. For this project the provided approximation is enough for the ball to balance.
+
 This approach ensures that the angle calculation accounts for the geometric constraints of the system while maintaining high precision.
 
 ### 5.2.4 Motor movement
@@ -299,6 +301,15 @@ All 3 parts of this system run in parallel ande different threads to make sure t
 An additional controll loop can be added to controll the balls position dynamically. One thing that could be accomplished by this is making the ball roll in different shapes such as a square. This loop also runns in parallel in a sepperate thread to compeletely seperate the goal position adjustment and other loops
 
 ## 6 Demonstration and Results
+### 6.1 Setteling time Results
+| Action | Setteling time |
+|----------|----------|
+| Ball starting from Edge of Plate   | 10.3s   |
+| Ball being pushed from setteled state in middle   | 9.7s   |
+
+These experimental results stem from 50 experiments per result data.
+
+### 6.2 Video Demonstration
 
 https://github.com/user-attachments/assets/8e9c09fc-2c4e-402d-9fc7-06fbf60173ed
 
