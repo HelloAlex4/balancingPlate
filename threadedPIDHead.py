@@ -53,8 +53,8 @@ class PIDController:
         return output
 
 # Initialize PID controllers with smoothing
-pid_x = PIDController(kp=0.01, ki=0.001, kd=0.007, buffer_size=5, max_rate=2.0)
-pid_y = PIDController(kp=0.01, ki=0.001, kd=0.007, buffer_size=5, max_rate=2.0)
+pid_x = PIDController(kp=0.01, ki=0.002, kd=0.007, buffer_size=5, max_rate=7.0)
+pid_y = PIDController(kp=0.01, ki=0.002, kd=0.007, buffer_size=5, max_rate=7.0)
 
 goalX = 600
 goalY = 600
