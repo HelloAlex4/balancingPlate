@@ -4,37 +4,55 @@ import threading
 import time
 
 class PIDController:
-    def __init__(self, kp, ki, kd):
+    def __init__(self, kp, ki, kd, buffer_size=5, max_rate=2.0):
         self.kp = kp
         self.ki = ki
         self.kd = kd
         self.prev_error = 0
         self.integral = 0
         self.last_time = time.time()
+        self.error_buffer = []
+        self.buffer_size = buffer_size
+        self.max_rate = max_rate
+        self.last_output = 0
 
     def compute(self, setpoint, measured_value):
         current_time = time.time()
         dt = current_time - self.last_time
         
+        # Calculate current error
         error = setpoint - measured_value
-        self.integral += error * dt
-        derivative = (error - self.prev_error) / dt if dt > 0 else 0
         
-        output = (self.kp * error + 
+        # Add to error buffer
+        self.error_buffer.append(error)
+        if len(self.error_buffer) > self.buffer_size:
+            self.error_buffer.pop(0)
+            
+        # Calculate averaged error
+        avg_error = sum(self.error_buffer) / len(self.error_buffer)
+        
+        # PID computation with averaged error
+        self.integral += avg_error * dt
+        derivative = (avg_error - self.prev_error) / dt if dt > 0 else 0
+        
+        output = (self.kp * avg_error + 
                  self.ki * self.integral + 
                  self.kd * derivative)
         
-        self.prev_error = error
+        # Limit rate of change
+        output_change = output - self.last_output
+        output_change = max(min(output_change, self.max_rate), -self.max_rate)
+        output = self.last_output + output_change
+        
+        self.prev_error = avg_error
         self.last_time = current_time
+        self.last_output = output
         
         return output
 
-# Initialize PID controllers for X and Y axes
-kpValue = 0.01
-kiValue = 0.001
-kdValue = 0.005
-pid_x = PIDController(kp=kpValue, ki=kiValue, kd=kdValue)
-pid_y = PIDController(kp=kpValue, ki=kiValue, kd=kdValue)
+# Initialize PID controllers with smoothing
+pid_x = PIDController(kp=0.01, ki=0.001, kd=0.005, buffer_size=5, max_rate=2.0)
+pid_y = PIDController(kp=0.01, ki=0.001, kd=0.005, buffer_size=5, max_rate=2.0)
 
 goalX = 600
 goalY = 600
