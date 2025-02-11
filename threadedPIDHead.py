@@ -31,8 +31,10 @@ class PIDController:
         # Calculate averaged error
         avg_error = sum(self.error_buffer) / len(self.error_buffer)
         
-        # PID computation with averaged error
-        self.integral += avg_error * dt
+        # Only accumulate integral if error is large enough
+        if abs(avg_error) > 90:
+            self.integral += avg_error * dt
+            
         derivative = (avg_error - self.prev_error) / dt if dt > 0 else 0
         
         output = (self.kp * avg_error + 
@@ -51,8 +53,8 @@ class PIDController:
         return output
 
 # Initialize PID controllers with smoothing
-pid_x = PIDController(kp=0.01, ki=0.001, kd=0.005, buffer_size=5, max_rate=2.0)
-pid_y = PIDController(kp=0.01, ki=0.001, kd=0.005, buffer_size=5, max_rate=2.0)
+pid_x = PIDController(kp=0.01, ki=0.001, kd=0.007, buffer_size=5, max_rate=2.0)
+pid_y = PIDController(kp=0.01, ki=0.001, kd=0.007, buffer_size=5, max_rate=2.0)
 
 goalX = 600
 goalY = 600
